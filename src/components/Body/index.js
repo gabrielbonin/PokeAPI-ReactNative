@@ -16,14 +16,13 @@ class Body extends Component {
   }
 
  async buscarPk(){
-    const buscarPokemon = this.state.buscarPokemon;
+    const buscarPokemon = this.state.buscarPokemon.toLowerCase();
     this.setState({modalVisible: true})
     const response = await api.get(`https://pokeapi.co/api/v2/pokemon/${buscarPokemon}/`)
     const data = {
       id: response.data.id,
       name: response.data.name,
       img: response.data.sprites.front_default,
-      
       
     }
     this.setState({pokemon: data});
@@ -42,7 +41,7 @@ class Body extends Component {
           <View style={styles.containerBody}>
         <Image resizeMode="cover" style={styles.fundo} source={require('../../assets/fundo.jpg')}></Image>
         {/* <Card data={this.state.pokemon}></Card> */}
-        <Modal transparent={true} animationType={'fade'} visible={this.state.modalVisible}>
+        <Modal transparent={true} animationType={'slide'} visible={this.state.modalVisible}>
            <View style={{margin: 15, flex: 1, alignItems: 'center', justifyContent: 'center'}}>
            <Text>{this.state.pokemon.name}</Text>
            <Text>{this.state.pokemon.id}</Text>
