@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Modal} from 'react-native';
+import {View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Modal, Button} from 'react-native';
 import Card from '../Card';
 
 import api from '../../service/api';
@@ -22,21 +22,35 @@ class Body extends Component {
     const data = {
       id: response.data.id,
       name: response.data.name,
-      type: response.data.type
+      img: response.data.sprites.front_default,
+      
+      
     }
     this.setState({pokemon: data});
-    alert('pokemon: ' + pokemon.name);
+    
+  
+  }
+
+  sair(visible){
+    this.setState({modalVisible: visible})
   }
 
   render() {
+    
     return (
       <View style={styles.container}>
           <View style={styles.containerBody}>
         <Image resizeMode="cover" style={styles.fundo} source={require('../../assets/fundo.jpg')}></Image>
         {/* <Card data={this.state.pokemon}></Card> */}
-        <Modal animationType={'fade'} visible={this.state.modalVisible}>
+        <Modal transparent={true} animationType={'fade'} visible={this.state.modalVisible}>
+           <View style={{margin: 15, flex: 1, alignItems: 'center', justifyContent: 'center'}}>
            <Text>{this.state.pokemon.name}</Text>
+           <Text>{this.state.pokemon.id}</Text>
+           <Image style={styles.pkImg} source={{uri: this.state.pokemon.img}}/>
+           <Button title="Sair" onPress={()=> this.sair(false)}/>
+           </View>
         </Modal>
+
           </View>
         <Text style={styles.text1}>Pokedex:</Text>
         <View style={styles.containerHeader}>
@@ -120,5 +134,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 30,
     padding: 5
+  },
+  //modal
+  pkImg:{
+    width: 350,
+    height: 340,
   }
 });
