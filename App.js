@@ -10,9 +10,7 @@ class App extends Component {
     return (
       <View style={styles.container}>
         <Header/>
-        <View style={styles.containerBody}>
         <Body/>
-        </View>
         <Footer/>
       </View>
     );
@@ -23,13 +21,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  containerBody:{
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 export default App;

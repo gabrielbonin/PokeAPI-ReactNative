@@ -14,7 +14,7 @@ export default Footer;
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 60,
+    height: 50,
     backgroundColor: '#cc0000',
     elevation: 5,
     shadowColor: '#000',
