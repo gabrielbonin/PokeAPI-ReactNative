@@ -1,23 +1,21 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Modal, Button} from 'react-native';
-
+import {useNavigation} from '@react-navigation/native';
 import api from '../../service/api';
 
-class Body extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      buscarPokemon: '',
-      pokemon : [],
-      modalVisible: false
-    }
-    this.buscarPk = this.buscarPk.bind(this);
-  }
 
- async buscarPk(){
-    const buscarPokemon = this.state.buscarPokemon.toLowerCase();
-    this.setState({modalVisible: true})
-    const response = await api.get(`https://pokeapi.co/api/v2/pokemon/${buscarPokemon}/`)
+export default function Body() {
+
+  const [buscarPokemon, setBuscarPokemon] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [pokemon, setPokemon] = useState([]);
+  
+  const navigation = useNavigation();
+  
+  async function buscarPk(){
+    const Lower = buscarPokemon.toLowerCase();
+    setModalVisible(true)
+    const response = await api.get(`https://pokeapi.co/api/v2/pokemon/${Lower}/`)
     const data = {
       height: response.data.height,
       name: response.data.name,
@@ -26,29 +24,33 @@ class Body extends Component {
       weight: response.data.weight
       
     }
-    this.setState({pokemon: data});
+    setPokemon(data);
     
-    alert('type: ' + this.state.pokemon.type)
+  }
   
-  }
-
-  sair(visible){
-    this.setState({modalVisible: visible})
-  }
-
-  render() {
+  function sair(visible){
+    setModalVisible(visible);
+    setBuscarPokemon("");
+    setPokemon('');
     
+  }
+
+  function irDetalhes() {
+    setModalVisible(false);
+    navigation.navigate('Detalhes')
+  }
+  
     return (
       <View style={styles.container}>
           <View style={styles.containerHeader}>
           <Image resizeMode="stretch" style={styles.fundo} source={require('../../assets/fundo.jpg')}></Image>
-          <Modal transparent={true} animationType={'slide'} visible={this.state.modalVisible}>
+          <Modal transparent={true} animationType={'slide'} visible={modalVisible}>
                  <View style={{width: '100%', height: 200, marginTop: 155, alignItems: 'center', justifyContent: 'center'}}>
                   <View style={{width: 80, height: 30, padding: 3, marginTop: 60, alignItems: 'center', justifyContent: 'flex-start'}}>
-                     <Button title="Voltar" onPress={()=> this.sair(false)}/>
+                     <Button title="Voltar" onPress={()=> sair(false)}/>
                    </View>
-                <TouchableOpacity>
-                  <Image style={styles.pkImg} source={{uri: this.state.pokemon.img}}/>
+                <TouchableOpacity onPress={irDetalhes}>
+                  <Image style={styles.pkImg} source={{uri: pokemon.img}}/>
                  </TouchableOpacity>
                 
                  </View>
@@ -60,69 +62,34 @@ class Body extends Component {
               <View style={styles.modalFooterHeader}></View>
                    <View style={styles.boxAtt}>
                      <View style={styles.headerBoxAtt}/>
-                   <Text style={styles.txtModal}>Nome: {this.state.pokemon.name}</Text>
+                   <Text style={styles.txtModal}>Nome: {pokemon.name}</Text>
                    </View>
                    <View style={styles.boxAtt}>
                    <View style={styles.headerBoxAtt}/>
-                   <Text style={styles.txtModal}>Altura: {this.state.pokemon.height}</Text>
+                   <Text style={styles.txtModal}>Altura: {pokemon.height}</Text>
                    </View>
                    <View style={styles.boxAtt}>
                    <View style={styles.headerBoxAtt}/>
-                   <Text style={styles.txtModal}>Tipo: {this.state.pokemon.type}</Text> 
+                   <Text style={styles.txtModal}>Tipo: {pokemon.type}</Text> 
                    </View>
                    <View style={styles.boxAtt}>
                    <View style={styles.headerBoxAtt}/>
-                   <Text style={styles.txtModal}>Peso: {this.state.pokemon.weight}</Text> 
+                   <Text style={styles.txtModal}>Peso: {pokemon.weight}</Text> 
                    </View>
                  </View>
             </View>
             <View style={styles.containerFooter2}>
-            <TextInput style={styles.inputPk} placeholder="Pesquise um Pokemon" onChangeText={(value)=> this.setState({buscarPokemon: value})}></TextInput>
-               <TouchableOpacity onPress={this.buscarPk} style={styles.btnPesq}>
-                 <Text style={styles.txtBtn}>+</Text>
+            <TextInput style={styles.inputPk} placeholder="Pesquise um Pokemon" onChangeText={(value)=> setBuscarPokemon(value)}>{buscarPokemon}</TextInput>
+               <TouchableOpacity onPress={buscarPk} style={styles.btnPesq}>
+                 <Image style={styles.btnPesq} source={require('../../assets/pikachulupa.jpg')}/>
                </TouchableOpacity>
             </View>
           </View>
       </View>
       );
-    }
+    
   }
-    //   <View style={styles.container}>
-    //     <View style={styles.containerBody}>
-    //         <Image resizeMode="stretch" style={styles.fundo} source={require('../../assets/fundo.jpg')}></Image>
-    //         <View style={styles.containerHeader}>
-    //           <TextInput style={styles.inputPk}
-    //             placeholder="Pesquise um Pokemon"
-    //             onChangeText={(value)=> this.setState({buscarPokemon: value})}></TextInput>
-    //           <TouchableOpacity onPress={this.buscarPk} style={styles.btnPesq}>
-    //             <Text style={styles.txtBtn}>+</Text>
-    //           </TouchableOpacity>
-    //         </View>
-    //           <Modal transparent={true} animationType={'slide'} visible={this.state.modalVisible}>
-    //             <View style={{width: 410, height: 440, marginTop: 70, alignItems: 'center', justifyContent: 'center'}}>
-    //               <View style={{width: 60, height: 30, padding: 3, marginTop: 50, alignItems: 'center', justifyContent: 'flex-start'}}>
-    //                 <Button title="Sair" onPress={()=> this.sair(false)}/>
-    //               </View>
-    //             <TouchableOpacity>
-    //               <Image style={styles.pkImg} source={{uri: this.state.pokemon.img}}/>
-    //             </TouchableOpacity>
-    //             <View style={styles.modalFooter}>
-    //               <View style={styles.boxAtt}>
-    //               <Text style={styles.txtModal}>{this.state.pokemon.name}</Text>
-    //               </View>
-    //               <View style={styles.boxAtt}>
-    //               <Text style={styles.txtModal}>{this.state.pokemon.id}</Text>
-    //               </View>
-    //               <View style={styles.boxAtt}>
-    //               <Text style={styles.txtModal}>{this.state.pokemon.type}</Text> 
-    //               </View>
-    //             </View>
-    //             </View>
-    //           </Modal>
-    //     </View>
-    // </View>
  
-export default Body;
 
 const styles = StyleSheet.create({
   container: {
@@ -176,13 +143,14 @@ const styles = StyleSheet.create({
   },
   inputPk:{
     borderColor: '#000',
-    borderWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: 'red',
     marginTop: 5,
     width: 300,
     height: 30,
     borderRadius: 5,
-    padding: 5,
-    textAlign: 'center',
+    padding: 6,
+    textAlign: 'left',
     marginLeft: 20,
     fontWeight: 'bold',
     fontSize: 16,
@@ -193,13 +161,12 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   btnPesq:{
-    width: 40,
-    height:40,
+    width: 80,
+    height:80,
     borderRadius: 5,
-    backgroundColor: 'red',
-    opacity: 0.7,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 60,
   },
   txtBtn:{
     fontWeight: 'bold',
