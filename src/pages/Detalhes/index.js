@@ -3,20 +3,33 @@ import {View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Modal, Butto
 import {useNavigation} from '@react-navigation/native';
 import api from '../../service/api';
 
-class Detalhes extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
-    }
-  }
 
-  render(){
+export default function Detalhes({route}){
+  const navigation = useNavigation();
+  
     return(
-      <View>
-          <Text>Detalhes</Text>
+      <View style={styles.container}>
+        <Header/>
+        <View style={styles.body}>
+          <Text>ID:{route.params.pokemonID}</Text>
+        </View>
+        <Footer/>
       </View>
     );
-  }
+  
 }
-export default Detalhes;
+
+
+const styles = StyleSheet.create({
+  container:{
+    flex: 1
+  },
+  body:{
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 200
+  }
+});

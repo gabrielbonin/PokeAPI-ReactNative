@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Modal, Button} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import api from '../../service/api';
@@ -11,12 +11,15 @@ export default function Body() {
   const [pokemon, setPokemon] = useState([]);
   
   const navigation = useNavigation();
+
+  
   
   async function buscarPk(){
     const Lower = buscarPokemon.toLowerCase();
     setModalVisible(true)
     const response = await api.get(`https://pokeapi.co/api/v2/pokemon/${Lower}/`)
     const data = {
+      id: response.data.id,
       height: response.data.height,
       name: response.data.name,
       img: response.data.sprites.front_default,
@@ -25,19 +28,23 @@ export default function Body() {
       
     }
     setPokemon(data);
-    
+
   }
+
+ 
+
   
   function sair(visible){
     setModalVisible(visible);
-    setBuscarPokemon("");
     setPokemon('');
-    
+    setBuscarPokemon('');
   }
 
   function irDetalhes() {
     setModalVisible(false);
-    navigation.navigate('Detalhes')
+    navigation.navigate('Detalhes', {pokemonID: pokemon.id})
+    setBuscarPokemon('')
+    setPokemon('')
   }
   
     return (
