@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Modal, Button} from 'react-native';
+import {View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Modal, Button, ActivityIndicator} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import api from '../../service/api';
 
@@ -57,7 +57,7 @@ export default function Body() {
                      <Button title="Voltar" onPress={()=> sair(false)}/>
                    </View>
                 <TouchableOpacity onPress={irDetalhes}>
-                  <Image style={styles.pkImg} source={{uri: pokemon.img}}/>
+                    <Image style={styles.pkImg} source={{uri: pokemon.img}}/>
                  </TouchableOpacity>
                 
                  </View>
