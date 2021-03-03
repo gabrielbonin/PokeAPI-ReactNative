@@ -1,19 +1,24 @@
 import React, {Component} from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
-class Header extends Component {
-  render() {
+export default function Header() {
+  const navigation = useNavigation();
+
+  function irHome(){
+    navigation.navigate('Home');
+  }
     return (
       <View style={styles.container}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={irHome}>
         <Image style={styles.pokebolaImg}
         source={require('../../assets/pokebola3.png')} />
         </TouchableOpacity>
       </View>
     );
-  }
+  
 }
-export default Header;
+
 
 const styles = StyleSheet.create({
   container: {

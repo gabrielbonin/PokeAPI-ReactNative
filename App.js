@@ -1,26 +1,23 @@
-import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 
+
+import Home from './src/pages/Home';
 import Body from './src/components/Body';
-import Footer from './src/components/Footer';
-import Header from './src/components/Header';
+import Detalhes from './src/pages/Detalhes';
 
-class App extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Header/>
-        <Body/>
-        <Footer/>
-      </View>
-    );
-  }
-}
+const Stack = createStackNavigator();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-  },
-});
-export default App;
+export default function App() {
+  return(
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+        <Stack.Screen name="Body" component={Body}  options={{ headerShown: false }}/>
+        <Stack.Screen name="Detalhes" component={Detalhes} options={{ headerShown: false }} />
+      </Stack.Navigator>
+    </NavigationContainer>
+      );
+    }
+

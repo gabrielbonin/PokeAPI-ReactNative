@@ -1,54 +1,63 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Modal, Button} from 'react-native';
-
+import {useNavigation} from '@react-navigation/native';
 import api from '../../service/api';
 
-class Body extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      buscarPokemon: '',
-      pokemon : [],
-      modalVisible: false
-    }
-    this.buscarPk = this.buscarPk.bind(this);
-  }
 
- async buscarPk(){
-    const buscarPokemon = this.state.buscarPokemon.toLowerCase();
-    this.setState({modalVisible: true})
-    const response = await api.get(`https://pokeapi.co/api/v2/pokemon/${buscarPokemon}/`)
+export default function Body() {
+
+  const [buscarPokemon, setBuscarPokemon] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [pokemon, setPokemon] = useState([]);
+  
+  const navigation = useNavigation();
+
+  
+  
+  async function buscarPk(){
+    const Lower = buscarPokemon.toLowerCase();
+    setModalVisible(true)
+    const response = await api.get(`https://pokeapi.co/api/v2/pokemon/${Lower}/`)
     const data = {
       id: response.data.id,
+      height: response.data.height,
       name: response.data.name,
       img: response.data.sprites.front_default,
-      type: response.data.types[0].type.name
+      type: response.data.types[0].type.name,
+      weight: response.data.weight
       
     }
-    this.setState({pokemon: data});
-    
-    alert('type: ' + this.state.pokemon.type)
+    setPokemon(data);
+
+  }
+
+ 
+
   
+  function sair(visible){
+    setModalVisible(visible);
+    setPokemon('');
+    setBuscarPokemon('');
   }
 
-  sair(visible){
-    this.setState({modalVisible: visible})
+  function irDetalhes() {
+    setModalVisible(false);
+    navigation.navigate('Detalhes', {pokemonID: pokemon.id})
+    setBuscarPokemon('')
+    setPokemon('')
   }
-
-  render() {
-    
+  
     return (
       <View style={styles.container}>
-        <Text>Body1</Text>
           <View style={styles.containerHeader}>
           <Image resizeMode="stretch" style={styles.fundo} source={require('../../assets/fundo.jpg')}></Image>
-          <Modal transparent={false} animationType={'slide'} visible={this.state.modalVisible}>
-                 <View style={{width: 410, height: 440, marginTop: 70, alignItems: 'center', justifyContent: 'center'}}>
-                  <View style={{width: 80, height: 30, padding: 3, marginTop: 50, alignItems: 'center', justifyContent: 'flex-start'}}>
-                     <Button title="Voltar" onPress={()=> this.sair(false)}/>
+          <Modal transparent={true} animationType={'slide'} visible={modalVisible}>
+                 <View style={{width: '100%', height: 200, marginTop: 155, alignItems: 'center', justifyContent: 'center'}}>
+                  <View style={{width: 80, height: 30, padding: 3, marginTop: 60, alignItems: 'center', justifyContent: 'flex-start'}}>
+                     <Button title="Voltar" onPress={()=> sair(false)}/>
                    </View>
-                <TouchableOpacity>
-                  <Image style={styles.pkImg} source={{uri: this.state.pokemon.img}}/>
+                <TouchableOpacity onPress={irDetalhes}>
+                  <Image style={styles.pkImg} source={{uri: pokemon.img}}/>
                  </TouchableOpacity>
                 
                  </View>
@@ -57,67 +66,37 @@ class Body extends Component {
           <View style={styles.containerBody}>
             <View style={styles.containerFooter1}>
             <View style={styles.modalFooter}> 
+              <View style={styles.modalFooterHeader}></View>
                    <View style={styles.boxAtt}>
-                   <Text style={styles.txtModal}>Nome: {this.state.pokemon.name}</Text>
+                     <View style={styles.headerBoxAtt}/>
+                   <Text style={styles.txtModal}>Nome: {pokemon.name}</Text>
                    </View>
                    <View style={styles.boxAtt}>
-                   <Text style={styles.txtModal}>Id: {this.state.pokemon.id}</Text>
+                   <View style={styles.headerBoxAtt}/>
+                   <Text style={styles.txtModal}>Altura: {pokemon.height}</Text>
                    </View>
                    <View style={styles.boxAtt}>
-                   <Text style={styles.txtModal}>Tipo: {this.state.pokemon.type}</Text> 
+                   <View style={styles.headerBoxAtt}/>
+                   <Text style={styles.txtModal}>Tipo: {pokemon.type}</Text> 
                    </View>
                    <View style={styles.boxAtt}>
-                   <Text style={styles.txtModal}>Peso: {this.state.pokemon.weight}</Text> 
+                   <View style={styles.headerBoxAtt}/>
+                   <Text style={styles.txtModal}>Peso: {pokemon.weight}</Text> 
                    </View>
                  </View>
             </View>
             <View style={styles.containerFooter2}>
-            <TextInput style={styles.inputPk} placeholder="Pesquise um Pokemon" onChangeText={(value)=> this.setState({buscarPokemon: value})}></TextInput>
-               <TouchableOpacity onPress={this.buscarPk} style={styles.btnPesq}>
-                 <Text style={styles.txtBtn}>+</Text>
+            <TextInput style={styles.inputPk} placeholder="Pesquise um Pokemon" onChangeText={(value)=> setBuscarPokemon(value)}>{buscarPokemon}</TextInput>
+               <TouchableOpacity onPress={buscarPk} style={styles.btnPesq}>
+                 <Image style={styles.btnPesq} source={require('../../assets/pikachulupa.jpg')}/>
                </TouchableOpacity>
             </View>
           </View>
       </View>
       );
-    }
+    
   }
-    //   <View style={styles.container}>
-    //     <View style={styles.containerBody}>
-    //         <Image resizeMode="stretch" style={styles.fundo} source={require('../../assets/fundo.jpg')}></Image>
-    //         <View style={styles.containerHeader}>
-    //           <TextInput style={styles.inputPk}
-    //             placeholder="Pesquise um Pokemon"
-    //             onChangeText={(value)=> this.setState({buscarPokemon: value})}></TextInput>
-    //           <TouchableOpacity onPress={this.buscarPk} style={styles.btnPesq}>
-    //             <Text style={styles.txtBtn}>+</Text>
-    //           </TouchableOpacity>
-    //         </View>
-    //           <Modal transparent={true} animationType={'slide'} visible={this.state.modalVisible}>
-    //             <View style={{width: 410, height: 440, marginTop: 70, alignItems: 'center', justifyContent: 'center'}}>
-    //               <View style={{width: 60, height: 30, padding: 3, marginTop: 50, alignItems: 'center', justifyContent: 'flex-start'}}>
-    //                 <Button title="Sair" onPress={()=> this.sair(false)}/>
-    //               </View>
-    //             <TouchableOpacity>
-    //               <Image style={styles.pkImg} source={{uri: this.state.pokemon.img}}/>
-    //             </TouchableOpacity>
-    //             <View style={styles.modalFooter}>
-    //               <View style={styles.boxAtt}>
-    //               <Text style={styles.txtModal}>{this.state.pokemon.name}</Text>
-    //               </View>
-    //               <View style={styles.boxAtt}>
-    //               <Text style={styles.txtModal}>{this.state.pokemon.id}</Text>
-    //               </View>
-    //               <View style={styles.boxAtt}>
-    //               <Text style={styles.txtModal}>{this.state.pokemon.type}</Text> 
-    //               </View>
-    //             </View>
-    //             </View>
-    //           </Modal>
-    //     </View>
-    // </View>
  
-export default Body;
 
 const styles = StyleSheet.create({
   container: {
@@ -126,7 +105,7 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: 'white',
     
   },
   containerHeader:{
@@ -135,21 +114,20 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'green',
+    alignItems: 'center'
   },
  
   containerBody:{
     width: '100%',
-    height: '40%',
+    height: '70%',
     alignItems: 'center',
     flexDirection: 'column',
     backgroundColor: '#FFFF',
   },
   containerFooter1:{
     width: '100%',
-    height: '50%',
-    backgroundColor: 'violet',
+    height: '41%',
+    backgroundColor: 'blue',
     alignItems: 'center',
     justifyContent: 'space-around',
     
@@ -159,9 +137,9 @@ const styles = StyleSheet.create({
   },
   containerFooter2:{
     width: '100%',
-    height: '50%',
+    height: '40%',
     flexDirection: 'row',
-    backgroundColor: 'orange',
+    backgroundColor: 'white',
     justifyContent: 'space-around',
     alignItems: 'flex-start',
     padding: 5,
@@ -171,16 +149,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   inputPk:{
+    borderColor: '#000',
+    borderBottomWidth: 1,
     borderColor: 'red',
-    borderWidth: 1,
+    marginTop: 5,
     width: 300,
-    height: 40,
-    borderRadius: 7,
-    padding: 5,
-    textAlign: 'center',
+    height: 30,
+    borderRadius: 5,
+    padding: 6,
+    textAlign: 'left',
     marginLeft: 20,
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 16,
     color: '#000'
   },
   fundo:{
@@ -188,13 +168,12 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   btnPesq:{
-    width: 40,
-    height:40,
+    width: 80,
+    height:80,
     borderRadius: 5,
-    backgroundColor: 'red',
-    opacity: 0.7,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 60,
   },
   txtBtn:{
     fontWeight: 'bold',
@@ -211,24 +190,40 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around', //lembrar
     width: '100%',
     height: '100%',
-    backgroundColor: 'violet',
-    marginTop: 1,
-    padding: 10,
-    flexWrap: 'wrap'
+    backgroundColor: 'white',
+    padding: 0,
+    flexWrap: 'wrap',
+    
+  },
+  modalFooterHeader:{
+    width: 410,
+    height: 15,
+    backgroundColor: 'red',
+    borderBottomEndRadius: 5
+  },
+  headerBoxAtt:{
+    width: '100%',
+    height: 8,
+    backgroundColor: 'red',
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5
   },
   boxAtt:{
-    width: 125,
-    height: 38,
-    backgroundColor: 'blue',
+    width: 130,
+    height: 48,
+    backgroundColor: 'white',
     alignItems: 'flex-start',
     justifyContent: 'center',
     borderRadius: 5,
-    padding: 5,
-    margin: 10
+    padding: 3,
+    margin: 10,
+    borderWidth: 1,
+    elevation: 3,
+    borderColor: '#DDD'
     
   },
   txtModal:{
-    color: '#DDD',
+    color: '#000',
     fontWeight: 'bold',
     fontSize: 16,
     fontStyle: 'italic'

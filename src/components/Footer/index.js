@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 
 class Footer extends Component {
   render() {
     return (
-      <View style={styles.container}>
-      </View>
+      <View style={styles.container}/>
     );
   }
 }
@@ -14,7 +13,7 @@ export default Footer;
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 50,
+    height: 20,
     backgroundColor: '#cc0000',
     elevation: 5,
     shadowColor: '#000',
