@@ -6,30 +6,33 @@ import api from '../../service/api';
 
 export default function Body() {
 
-  const [buscarPokemon, setBuscarPokemon] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
-  const [pokemon, setPokemon] = useState([]);
+
+
+   const [buscarPokemon, setBuscarPokemon] = useState('');
+   const [modalVisible, setModalVisible] = useState(false);
+   const [pokemon, setPokemon] = useState([]);
   
-  const navigation = useNavigation();
+   const navigation = useNavigation();
+
 
   
   
-  async function buscarPk(){
-    const Lower = buscarPokemon.toLowerCase();
-    setModalVisible(true)
-    const response = await api.get(`https://pokeapi.co/api/v2/pokemon/${Lower}/`)
-    const data = {
-      id: response.data.id,
-      height: response.data.height,
-      name: response.data.name,
-      img: response.data.sprites.front_default,
-      type: response.data.types[0].type.name,
-      weight: response.data.weight
+   async function buscarPk(){
+     const Lower = buscarPokemon.toLowerCase();
+     setModalVisible(true)
+     const response = await api.get(`https://pokeapi.co/api/v2/pokemon/${Lower}/`)
+     const data = {
+       id: response.data.id,
+       height: response.data.height,
+       name: response.data.name,
+       img: response.data.sprites.front_default,
+       types: response.data.types[0].type.name,
+       weight: response.data.weight
       
-    }
-    setPokemon(data);
+     }
+     setPokemon(data);
 
-  }
+   }
 
  
 
@@ -42,7 +45,7 @@ export default function Body() {
 
   function irDetalhes() {
     setModalVisible(false);
-    navigation.navigate('Detalhes', {pokemonID: pokemon.id})
+    navigation.navigate('Detalhes', {pokemonID: pokemon.id, pokemon: pokemon})
     setBuscarPokemon('')
     setPokemon('')
   }
@@ -77,7 +80,7 @@ export default function Body() {
                    </View>
                    <View style={styles.boxAtt}>
                    <View style={styles.headerBoxAtt}/>
-                   <Text style={styles.txtModal}>Tipo: {pokemon.type}</Text> 
+                   <Text style={styles.txtModal}>Tipo: {pokemon.types}</Text> 
                    </View>
                    <View style={styles.boxAtt}>
                    <View style={styles.headerBoxAtt}/>
@@ -210,12 +213,12 @@ const styles = StyleSheet.create({
   },
   boxAtt:{
     width: 130,
-    height: 48,
+    height: 58,
     backgroundColor: 'white',
     alignItems: 'flex-start',
     justifyContent: 'center',
     borderRadius: 5,
-    padding: 3,
+    padding: 2,
     margin: 10,
     borderWidth: 1,
     elevation: 3,
